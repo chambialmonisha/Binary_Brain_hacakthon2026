@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Binary Brain Hackathon 2026</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #050505;
+    color: white;
+}
+
+/* HEADER */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    background: #111;
+    box-shadow: 0 0 25px cyan;
+}
+
+.logo img {
+    width: 80px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px cyan;
+}
+
+.deadline {
+    color: red;
+    font-weight: bold;
+}
+
+/* REGISTER BUTTON */
+.register {
+    text-align: center;
+    margin: 20px;
+}
+
+.register a {
+    padding: 12px 25px;
+    color: white;
+    text-decoration: none;
+    border: 2px solid cyan;
+    border-radius: 8px;
+    box-shadow: 0 0 10px cyan;
+    transition: 0.3s;
+}
+
+.register a:hover {
+    background: cyan;
+    color: black;
+    box-shadow: 0 0 20px cyan;
+}
+
+/* SECTION */
+.section {
+    padding: 40px;
+}
+
+.section h2 {
+    text-align: center;
+    color: cyan;
+    text-shadow: 0 0 10px cyan;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+}
+
+/* CARD */
+.card {
+    background: #111;
+    border: 1px solid cyan;
+    padding: 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 10px cyan;
+}
+
+.card:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 30px cyan, 0 0 60px blue;
+}
+
+/* MODAL */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    background: #111;
+    margin: 5% auto;
+    padding: 25px;
+    width: 70%;
+    border-radius: 12px;
+    box-shadow: 0 0 30px cyan;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+    color: cyan;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #111;
+    border-top: 1px solid cyan;
+    box-shadow: 0 -2px 15px cyan;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">
+<img src="logo.jpeg">
+</div>
+<div>
+<h1>🚀 BINARY BRAIN CLUB HACKATHON 2026</h1>
+<p class="deadline">Submission Deadline: 30th May 2026</p>
+</div>
+</header>
+
+<div class="register">
+<a href="https://forms.gle/yEme8qQAUqoiRo527" target="_blank">
+🚀 Register Now – Join the Hackathon
+</a>
+</div>
+
+<!-- ================= 6-8 ================= -->
+<div class="section">
+<h2>🌱 Classes VI–VIII (IGNITE)</h2>
+<div class="grid">
+<div class="card" onclick="openModal('animate')">🎬 Animate for Earth</div>
+<div class="card" onclick="openModal('model')">🏗️ Build the Future</div>
+<div class="card" onclick="openModal('game')">🎮 Play for Purpose</div>
+<div class="card" onclick="openModal('web')">🌐 Web for Change</div>
+<div class="card" onclick="openModal('app')">📱 App for Good</div>
+</div>
+</div>
+
+<!-- ================= 9-10 ================= -->
+<div class="section">
+<h2>🚀 Classes IX–X (SURGE)</h2>
+<div class="grid">
+<div class="card" onclick="openModal('python')">🧠 Code for Impact</div>
+<div class="card" onclick="openModal('ai')">🤖 AI for Humanity</div>
+<div class="card" onclick="openModal('appx')">📱 AppX</div>
+<div class="card" onclick="openModal('proto')">🏗️ Prototype to Reality</div>
+<div class="card" onclick="openModal('film')">🎬 Reel the Change</div>
+</div>
+</div>
+
+<!-- ================= 11-12 ================= -->
+<div class="section">
+<h2>🔬 Classes XI–XII (ELITE)</h2>
+<div class="grid">
+<div class="card" onclick="openModal('ai_pro')">🧠 AI Systems</div>
+<div class="card" onclick="openModal('fullstack')">💻 Full Stack</div>
+<div class="card" onclick="openModal('future')">🤖 FutureTech</div>
+<div class="card" onclick="openModal('impact')">📱 Impact App</div>
+<div class="card" onclick="openModal('vision')">🚀 Vision 2035</div>
+<div class="card" onclick="openModal('cinema')">🎬 Cinematic Impact</div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal()">&times;</span>
+
+<h2 id="title"></h2>
+<p id="desc"></p>
+
+<h3>💡 Theme Examples</h3>
+<p id="ideas"></p>
+
+<h3>🛠 Platforms</h3>
+<p id="tools"></p>
+
+<h3>📦 Expected Output</h3>
+<p id="output"></p>
+
+</div>
+</div>
+
+<footer>
+<p>📞 Contact: 9459331910</p>
+<p>👩‍💻 Incharge: Binary Brain Club</p>
+<p>© 2026 Binary Brain Club</p>
+</footer>
+
+<script>
+function openModal(type){
+let data = {
+
+animate:{title:"Animate for Earth",desc:"Create SDG animation",ideas:"Life 2050, Save Water, Trees Talk",tools:"Scratch, Canva",output:"Short animation"},
+model:{title:"Build the Future",desc:"Create model",ideas:"Zero Waste School, Smart Home",tools:"DIY",output:"Model"},
+game:{title:"Play for Purpose",desc:"Create game",ideas:"Ocean clean game",tools:"Scratch",output:"Game"},
+web:{title:"Web for Change",desc:"Build website",ideas:"No plastic site",tools:"HTML, Google Sites",output:"Website"},
+app:{title:"App for Good",desc:"Design app",ideas:"Water reminder",tools:"MIT App Inventor",output:"Prototype"},
+
+python:{title:"Code for Impact",desc:"Python solution",ideas:"Air quality analyzer",tools:"Python",output:"Program"},
+ai:{title:"AI for Humanity",desc:"ML model",ideas:"Waste classifier",tools:"Python ML",output:"Model"},
+appx:{title:"AppX",desc:"Full app",ideas:"Waste app",tools:"React Native",output:"App"},
+proto:{title:"Prototype",desc:"Hardware model",ideas:"Smart irrigation",tools:"Arduino",output:"Prototype"},
+film:{title:"Reel the Change",desc:"Short film",ideas:"Climate change",tools:"Video tools",output:"Film"},
+
+ai_pro:{title:"AI Systems",desc:"Advanced ML",ideas:"Disease prediction",tools:"Python",output:"Model"},
+fullstack:{title:"Full Stack",desc:"Complete system",ideas:"Smart city",tools:"Web stack",output:"App"},
+future:{title:"FutureTech",desc:"Innovation prototype",ideas:"IoT system",tools:"Arduino",output:"Prototype"},
+impact:{title:"Impact App",desc:"Advanced app",ideas:"Health tracker",tools:"Mobile dev",output:"App"},
+vision:{title:"Vision 2035",desc:"Future idea",ideas:"AI cities",tools:"Concept",output:"Prototype"},
+cinema:{title:"Cinematic Impact",desc:"Documentary",ideas:"SDG future",tools:"Video tools",output:"Film"}
+
+};
+
+let d = data[type];
+document.getElementById("modal").style.display="block";
+document.getElementById("title").innerText=d.title;
+document.getElementById("desc").innerText=d.desc;
+document.getElementById("ideas").innerText=d.ideas;
+document.getElementById("tools").innerText=d.tools;
+document.getElementById("output").innerText=d.output;
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
+</script>
+
+</body>
+</html>
