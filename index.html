@@ -2,252 +2,535 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Binary Brain Hackathon 2026</title>
+
+<!-- Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: #050505;
     color: white;
+    background: transparent;
 }
 
-/* HEADER */
+/* ===== NEON CANVAS ===== */
+#neonCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* ===== POPUP ===== */
+#entryPopup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.popup-content {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+}
+
+.popup-content img {
+    width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 0 25px cyan;
+}
+
+.close-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff0040;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+}
+
+/* ===== HEADER ===== */
 header {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 20px;
-    padding: 20px;
-    background: #111;
-    box-shadow: 0 0 25px cyan;
+    gap: 15px;
+    padding: 12px;
+    background: #0d0d0d;
+    box-shadow: 0 0 20px cyan;
+    flex-wrap: wrap;
 }
 
 .logo img {
-    width: 80px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px cyan;
+    width: 45px;
+    filter: drop-shadow(0 0 8px cyan);
+}
+
+header h2 {
+    text-shadow: 0 0 10px cyan, 0 0 20px blue;
 }
 
 .deadline {
-    color: red;
-    font-weight: bold;
+    color: #ff4d4d;
+    text-shadow: 0 0 8px red;
 }
 
-/* REGISTER BUTTON */
+/* ===== BUTTON ===== */
 .register {
     text-align: center;
     margin: 20px;
 }
-
 .register a {
-    padding: 12px 25px;
-    color: white;
-    text-decoration: none;
+    padding: 12px 20px;
     border: 2px solid cyan;
     border-radius: 8px;
+    color: cyan;
+    text-decoration: none;
     box-shadow: 0 0 10px cyan;
-    transition: 0.3s;
 }
-
 .register a:hover {
     background: cyan;
     color: black;
-    box-shadow: 0 0 20px cyan;
 }
 
-/* SECTION */
+/* ===== SECTION ===== */
 .section {
-    padding: 40px;
+    padding: 20px;
 }
-
 .section h2 {
     text-align: center;
     color: cyan;
     text-shadow: 0 0 10px cyan;
 }
 
-/* GRID */
+/* ===== GRID ===== */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+    gap: 15px;
 }
 
-/* CARD */
+/* ===== CARD ===== */
 .card {
-    background: #111;
+    background: #0d0d0d;
+    padding: 12px;
     border: 1px solid cyan;
-    padding: 15px;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
+    text-align: center;
     transition: 0.3s;
-    box-shadow: 0 0 10px cyan;
+    box-shadow: 0 0 10px rgba(0,255,255,0.3);
 }
-
 .card:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 30px cyan, 0 0 60px blue;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px cyan, 0 0 40px blue;
 }
 
-/* MODAL */
+/* ===== MODAL ===== */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9);
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
-    background: #111;
-    margin: 5% auto;
-    padding: 25px;
-    width: 70%;
+    background: #0d0d0d;
+    padding: 20px;
+    width: 90%;
+    max-width: 550px;
     border-radius: 12px;
-    box-shadow: 0 0 30px cyan;
-    max-height: 80vh;
+    box-shadow: 0 0 25px cyan;
+    max-height: 85vh;
     overflow-y: auto;
 }
 
 .close {
     float: right;
-    font-size: 28px;
     cursor: pointer;
-    color: cyan;
 }
 
-/* FOOTER */
+/* ===== FOOTER ===== */
 footer {
     text-align: center;
-    padding: 20px;
-    background: #111;
+    padding: 15px;
+    background: #0d0d0d;
     border-top: 1px solid cyan;
-    box-shadow: 0 -2px 15px cyan;
 }
 </style>
 </head>
 
 <body>
 
+<canvas id="neonCanvas"></canvas>
+
+<!-- POPUP -->
+<div id="entryPopup">
+<div class="popup-content">
+<button class="close-btn" onclick="enterSite()">✖</button>
+<img src="Hackathon_2026.png">
+</div>
+</div>
+
+<div id="mainContent" style="display:none;">
+
 <header>
 <div class="logo">
 <img src="logo.jpeg">
 </div>
 <div>
-<h1>🚀 BINARY BRAIN CLUB HACKATHON 2026</h1>
-<p class="deadline">Submission Deadline: 30th May 2026</p>
+<h2>🚀 BINARY BRAIN HACKATHON 2026</h2>
+<p class="deadline">Last Date: 30th May 2026</p>
 </div>
 </header>
 
 <div class="register">
-<a href="https://forms.gle/yEme8qQAUqoiRo527" target="_blank">
-🚀 Register Now – Join the Hackathon
-</a>
+<a href="https://forms.gle/yEme8qQAUqoiRo527" target="_blank">Register Now</a>
 </div>
 
-<!-- ================= 6-8 ================= -->
+<!-- SECTIONS -->
 <div class="section">
-<h2>🌱 Classes VI–VIII (IGNITE)</h2>
+<h2>🌱 IGNITE (Classes VI–VIII)</h2>
 <div class="grid">
-<div class="card" onclick="openModal('animate')">🎬 Animate for Earth</div>
-<div class="card" onclick="openModal('model')">🏗️ Build the Future</div>
-<div class="card" onclick="openModal('game')">🎮 Play for Purpose</div>
-<div class="card" onclick="openModal('web')">🌐 Web for Change</div>
-<div class="card" onclick="openModal('app')">📱 App for Good</div>
+<div class="card" onclick="openModal('animate')">Animate for Earth</div>
+<div class="card" onclick="openModal('model')">Build the Future</div>
+<div class="card" onclick="openModal('game')">Play for Purpose</div>
+<div class="card" onclick="openModal('web')">Web for Change</div>
+<div class="card" onclick="openModal('app')">App for Good</div>
 </div>
 </div>
 
-<!-- ================= 9-10 ================= -->
 <div class="section">
-<h2>🚀 Classes IX–X (SURGE)</h2>
+<h2>🚀 SURGE (Classes IX–X)</h2>
 <div class="grid">
-<div class="card" onclick="openModal('python')">🧠 Code for Impact</div>
-<div class="card" onclick="openModal('ai')">🤖 AI for Humanity</div>
-<div class="card" onclick="openModal('appx')">📱 AppX</div>
-<div class="card" onclick="openModal('proto')">🏗️ Prototype to Reality</div>
-<div class="card" onclick="openModal('film')">🎬 Reel the Change</div>
+<div class="card" onclick="openModal('python')">Code for Impact</div>
+<div class="card" onclick="openModal('ai')">AI for Humanity</div>
+<div class="card" onclick="openModal('appx')">AppX</div>
+<div class="card" onclick="openModal('proto')">Prototype</div>
+<div class="card" onclick="openModal('film')">Reel the Change</div>
 </div>
 </div>
 
-<!-- ================= 11-12 ================= -->
 <div class="section">
-<h2>🔬 Classes XI–XII (ELITE)</h2>
+<h2>🔬 VANGUARD (Classes XI–XII)</h2>
 <div class="grid">
-<div class="card" onclick="openModal('ai_pro')">🧠 AI Systems</div>
-<div class="card" onclick="openModal('fullstack')">💻 Full Stack</div>
-<div class="card" onclick="openModal('future')">🤖 FutureTech</div>
-<div class="card" onclick="openModal('impact')">📱 Impact App</div>
-<div class="card" onclick="openModal('vision')">🚀 Vision 2035</div>
-<div class="card" onclick="openModal('cinema')">🎬 Cinematic Impact</div>
+<div class="card" onclick="openModal('ai_pro')">AI Systems</div>
+<div class="card" onclick="openModal('fullstack')">Full Stack</div>
+<div class="card" onclick="openModal('future')">FutureTech</div>
+<div class="card" onclick="openModal('impact')">Impact App</div>
+<div class="card" onclick="openModal('vision')">Vision 2035</div>
+<div class="card" onclick="openModal('cinema')">Cinematic Impact</div>
 </div>
 </div>
 
 <!-- MODAL -->
-<div id="modal" class="modal">
-<div class="modal-content">
-<span class="close" onclick="closeModal()">&times;</span>
+<div id="modal" class="modal" onclick="closeModal()">
+<div class="modal-content" onclick="event.stopPropagation()">
+<span class="close" onclick="closeModal()">×</span>
 
 <h2 id="title"></h2>
+
+<h3>📌 Objective</h3>
 <p id="desc"></p>
 
-<h3>💡 Theme Examples</h3>
+<h3>💡 Suggested Ideas</h3>
 <p id="ideas"></p>
 
-<h3>🛠 Platforms</h3>
+<h3>🛠 Tools & Platforms</h3>
 <p id="tools"></p>
+<p><i>You may use any other platform or tool of your choice if it meets the project requirements.</i></p>
 
 <h3>📦 Expected Output</h3>
 <p id="output"></p>
+
+<h3>🏆 Evaluation Criteria</h3>
+<p id="criteria"></p>
 
 </div>
 </div>
 
 <footer>
-<p>📞 Contact: 9459331910</p>
-<p>👩‍💻 Incharge: Binary Brain Club</p>
+<p>📧 binarybrainclub@gmail.com</p>
 <p>© 2026 Binary Brain Club</p>
 </footer>
+
+</div>
+
+<script>
+/* ENTER SITE */
+function enterSite() {
+document.getElementById("entryPopup").style.display="none";
+document.getElementById("mainContent").style.display="block";
+}
+
+/* CONFETTI */
+window.onload = () => {
+confetti({particleCount: 120, spread: 80});
+};
+
+/* NEON BACKGROUND */
+const canvas = document.getElementById("neonCanvas");
+const ctx = canvas.getContext("2d");
+
+let w,h;
+function resize(){
+w=canvas.width=window.innerWidth;
+h=canvas.height=window.innerHeight;
+}
+resize();
+window.onresize=resize;
+
+let lines=[];
+for(let i=0;i<60;i++){
+lines.push({
+x:Math.random()*w,
+y:Math.random()*h,
+speed:Math.random()*1+0.5,
+len:Math.random()*80+20
+});
+}
+
+function draw(){
+ctx.fillStyle="rgba(0,0,0,0.15)";
+ctx.fillRect(0,0,w,h);
+
+lines.forEach(l=>{
+ctx.beginPath();
+ctx.shadowBlur=15;
+ctx.shadowColor="cyan";
+ctx.strokeStyle="#00ffff";
+ctx.moveTo(l.x,l.y);
+ctx.lineTo(l.x,l.y+l.len);
+ctx.stroke();
+
+l.y+=l.speed;
+if(l.y>h){
+l.y=-l.len;
+l.x=Math.random()*w;
+}
+});
+
+requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+
 
 <script>
 function openModal(type){
 let data = {
 
-animate:{title:"Animate for Earth",desc:"Create SDG animation",ideas:"Life 2050, Save Water, Trees Talk",tools:"Scratch, Canva",output:"Short animation"},
-model:{title:"Build the Future",desc:"Create model",ideas:"Zero Waste School, Smart Home",tools:"DIY",output:"Model"},
-game:{title:"Play for Purpose",desc:"Create game",ideas:"Ocean clean game",tools:"Scratch",output:"Game"},
-web:{title:"Web for Change",desc:"Build website",ideas:"No plastic site",tools:"HTML, Google Sites",output:"Website"},
-app:{title:"App for Good",desc:"Design app",ideas:"Water reminder",tools:"MIT App Inventor",output:"Prototype"},
+animate:{
+title:"Animate for Earth",
+desc:"Create an animation that spreads awareness about environmental or social issues.",
+ideas:"Save water, climate change, clean earth",
+tools:"Scratch, Canva, PowerPoint animation",
+output:"1–2 min animation video",
+criteria:"Creativity, message clarity, storytelling"
+},
 
-python:{title:"Code for Impact",desc:"Python solution",ideas:"Air quality analyzer",tools:"Python",output:"Program"},
-ai:{title:"AI for Humanity",desc:"ML model",ideas:"Waste classifier",tools:"Python ML",output:"Model"},
-appx:{title:"AppX",desc:"Full app",ideas:"Waste app",tools:"React Native",output:"App"},
-proto:{title:"Prototype",desc:"Hardware model",ideas:"Smart irrigation",tools:"Arduino",output:"Prototype"},
-film:{title:"Reel the Change",desc:"Short film",ideas:"Climate change",tools:"Video tools",output:"Film"},
+model:{
+title:"Build the Future",
+desc:"Design a working model that solves a real-world problem.",
+ideas:"Smart home, waste management",
+tools:"DIY materials, Arduino (optional)",
+output:"Physical model with explanation",
+criteria:"Innovation, functionality, practicality"
+},
 
-ai_pro:{title:"AI Systems",desc:"Advanced ML",ideas:"Disease prediction",tools:"Python",output:"Model"},
-fullstack:{title:"Full Stack",desc:"Complete system",ideas:"Smart city",tools:"Web stack",output:"App"},
-future:{title:"FutureTech",desc:"Innovation prototype",ideas:"IoT system",tools:"Arduino",output:"Prototype"},
-impact:{title:"Impact App",desc:"Advanced app",ideas:"Health tracker",tools:"Mobile dev",output:"App"},
-vision:{title:"Vision 2035",desc:"Future idea",ideas:"AI cities",tools:"Concept",output:"Prototype"},
-cinema:{title:"Cinematic Impact",desc:"Documentary",ideas:"SDG future",tools:"Video tools",output:"Film"}
+game:{
+title:"Play for Purpose",
+desc:"Develop a simple educational or awareness-based game.",
+ideas:"Pollution awareness game",
+tools:"Scratch",
+output:"Playable game",
+criteria:"Logic, engagement, usability"
+},
+
+web:{
+title:"Web for Change",
+desc:"Create a basic website addressing a social issue.",
+ideas:"No plastic campaign",
+tools:"HTML, Google Sites",
+output:"Working website",
+criteria:"Design, content, usability"
+},
+
+app:{
+title:"App for Good",
+desc:"Design a beginner-level mobile app idea.",
+ideas:"Reminder app",
+tools:"MIT App Inventor",
+output:"Prototype/screens",
+criteria:"Idea clarity, usefulness"
+},
+
+python:{
+title:"Code for Impact",
+desc:"Develop a Python-based solution for a real problem.",
+ideas:"Air quality checker",
+tools:"Python",
+output:"Working code",
+criteria:"Logic, correctness, efficiency"
+},
+
+ai:{
+title:"AI for Humanity",
+desc:"Build an AI/ML model solving a real issue.",
+ideas:"Waste classifier",
+tools:"Python ML",
+output:"Model + results",
+criteria:"Accuracy, relevance, implementation"
+},
+
+appx:{
+title:"AppX",
+desc:"Develop a complete mobile application.",
+ideas:"Community help app",
+tools:"React Native",
+output:"Functional app",
+criteria:"UI/UX, functionality"
+},
+
+proto:{
+title:"Prototype",
+desc:"Create a hardware-based prototype.",
+ideas:"Smart irrigation",
+tools:"Arduino",
+output:"Working prototype",
+criteria:"Innovation, real-world use"
+},
+
+film:{
+title:"Reel the Change",
+desc:"Create a short awareness film.",
+ideas:"Climate awareness",
+tools:"Video tools",
+output:"3–5 min film",
+criteria:"Storytelling, impact"
+},
+
+ai_pro:{
+title:"AI Systems",
+desc:"Develop advanced AI systems.",
+ideas:"Disease prediction",
+tools:"Python",
+output:"Model",
+criteria:"Complexity, accuracy"
+},
+
+fullstack:{
+title:"Full Stack",
+desc:"Develop a full system (frontend + backend).",
+ideas:"Smart city app",
+tools:"Web stack",
+output:"Complete app",
+criteria:"Integration, performance"
+},
+
+future:{
+title:"FutureTech",
+desc:"Create innovative prototype ideas.",
+ideas:"IoT solutions",
+tools:"Arduino",
+output:"Prototype",
+criteria:"Innovation, feasibility"
+},
+
+impact:{
+title:"Impact App",
+desc:"Develop advanced mobile app.",
+ideas:"Health tracker",
+tools:"Mobile dev",
+output:"App",
+criteria:"Design, usability"
+},
+
+vision:{
+title:"Vision 2035",
+desc:"Present future technology concept.",
+ideas:"AI cities",
+tools:"Concept tools",
+output:"Presentation + prototype",
+criteria:"Creativity, feasibility"
+},
+
+cinema:{
+title:"Cinematic Impact",
+desc:"Create documentary.",
+ideas:"Future world",
+tools:"Video tools",
+output:"Film",
+criteria:"Message, quality"
+}
 
 };
 
 let d = data[type];
-document.getElementById("modal").style.display="block";
+document.getElementById("modal").style.display="flex";
 document.getElementById("title").innerText=d.title;
 document.getElementById("desc").innerText=d.desc;
 document.getElementById("ideas").innerText=d.ideas;
 document.getElementById("tools").innerText=d.tools;
 document.getElementById("output").innerText=d.output;
+document.getElementById("criteria").innerText=d.criteria;
 }
 
 function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 </script>
+<script>
 
+/* CONFETTI BURST */
+function launchConfetti() {
+    let duration = 2000;
+    let end = Date.now() + duration;
+
+    (function frame() {
+        confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 70,
+            origin: { x: 0 }
+        });
+        confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 70,
+            origin: { x: 1 }
+        });
+
+        if (Date.now() < end) {
+            requestAnimationFrame(frame);
+        }
+    })();
+}
+
+
+/* AUTO CONFETTI ON LOAD */
+window.onload = function() {
+    launchConfetti();
+};
+
+</script>
 </body>
 </html>
